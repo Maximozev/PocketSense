@@ -16,9 +16,7 @@ import {
 } from "recharts";
 import regression, { DataPoint } from "regression";
 
-type Props = {};
-
-const Predictions = (props: Props) => {
+const Predictions = () => {
   const { palette } = useTheme();
   const [isPredictions, setIsPredictions] = useState(false);
   const { data: kpiData } = useGetKpisQuery();
@@ -28,7 +26,7 @@ const Predictions = (props: Props) => {
     const monthData = kpiData[0].monthlyData;
 
     const formatted: Array<DataPoint> = monthData.map(
-      ({ month, revenue, expenses }, i: number) => {
+      ({ revenue }, i: number) => {
         return [i, revenue];
       }
     );
@@ -39,7 +37,7 @@ const Predictions = (props: Props) => {
         name: month,
         "Actual Revenue": revenue,
         "Regression Line": regressionLine.points[i][1],
-        "Predicted Revenue": regressionLine.predict(i + 12),
+        "Predicted Revenue": regressionLine.predict(i + 12)[1],
       };
     });
   }, [kpiData]);
@@ -55,14 +53,14 @@ const Predictions = (props: Props) => {
           </Typography>
         </Box>
         <Button
-          onclick={() => setIsPredictions(!isPredictions)}
+          onClick={() => setIsPredictions(!isPredictions)}
           sx={{
             color: palette.grey[900],
             backgroundColor: palette.grey[700],
-            boxShadow: "0.1rem 0.1rem 0.1rem 0.1rem rbga(0,0,0,.4)",
+            boxShadow: "0.1rem 0.1rem 0.1rem 0.1rem rgba(0,0,0,.4)",
           }}
         >
-          Show Predicted Revenue
+          Show Predicted Revenue for Next Year
         </Button>
       </FlexBetween>
       <ResponsiveContainer width="100%" height="100%">
@@ -105,13 +103,13 @@ const Predictions = (props: Props) => {
           <Line
             type="monotone"
             dataKey="Regression Line"
-            stroke="#8884d8"
+            stroke=" rgb(185, 100, 224) "
             dot={false}
           />
 
           {isPredictions && (
             <Line
-              type="monotone"
+              strokeDasharray="5 5"
               dataKey="Predicted Revenue"
               stroke={palette.secondary[500]}
             />
